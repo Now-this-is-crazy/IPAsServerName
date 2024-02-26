@@ -18,4 +18,4 @@ private void addAndClose(CallbackInfo ci) {
 
 ## Get the Mod
 
-Simply head over to the [Releases](https://github.com/RedVortexDev/IPAsServerName/releases) page and download the mod!
+Simply head over to the [Releases](https://github.com/RedVortexDev/IPAsServerName/releases/latest) page and download the mod!
