@@ -22,12 +22,9 @@
 		"iasn.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.15.7",
-		"minecraft": "~1.20.4",
+		"fabricloader": "*",
+		"minecraft": "*",
 		"java": ">=17",
 		"fabric-api": "*"
-	},
-	"recommends": {
-		"modmenu": "*"
 	}
 }
