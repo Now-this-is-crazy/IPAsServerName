@@ -3,17 +3,16 @@
 	"id": "iasn",
 	"version": "${version}",
 	"name": "IP as Server Name",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Use IP as server names if not provided",
 	"authors": [
-		"Me!"
+		"RedVortex"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/RedVortexDev/IPAsServerName"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/iasn/icon.png",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
 		"main": [
 			"io.github.redvortexdev.iasn.IPAsServerName"
@@ -28,7 +27,7 @@
 		"java": ">=17",
 		"fabric-api": "*"
 	},
-	"suggests": {
-		"another-mod": "*"
+	"recommends": {
+		"modmenu": "*"
 	}
 }
