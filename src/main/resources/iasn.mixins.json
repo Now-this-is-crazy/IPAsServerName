@@ -3,7 +3,7 @@
 	"package": "io.github.redvortexdev.iasn.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
-		"ExampleMixin"
+		"AddServerScreenMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
