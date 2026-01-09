@@ -6,6 +6,6 @@ When adding a new server, if a name isn't provided, the mod will save the server
 
 ## Get the Mod
 
-Simply head over to the [Releases](https://github.com/RedVortexDev/IPAsServerName/releases/latest) page and download the mod!
+Simply head over to the [Modrinth](https://modrinth.com/mod/ip-as-server-name/versions) page and download the mod!
 
 Releases are no longer published on GitHub.
