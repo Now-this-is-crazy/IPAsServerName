@@ -1,38 +1,40 @@
-# Automatically build the project and run any configured tests for every push
-# and submitted pull request. This can help catch issues that only occur on
-# certain platforms or Java versions, and provides a first line of defence
-# against bad commits.
-
-name: build
+name: Build
 on:
   pull_request:
   push:
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      publish:
+        description: Publish artifacts to Modrinth?
+        required: false
+        type: boolean
+        default: false
+    secrets:
+      MODRINTH_TOKEN:
+        required: false
 
 jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
-      - name: checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v6
-      - name: validate gradle wrapper
+      - name: Validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v6
-      - name: setup jdk
+      - name: Setup JDK
         uses: actions/setup-java@v5
         with:
           java-version: '25'
           distribution: 'microsoft'
-      - name: make gradle wrapper executable
-        run: chmod +x ./gradlew
-      - name: build
+      - name: Build
         run: ./gradlew buildAndCollect
-      - name: capture build artifacts
+      - name: Capture build artifacts
         uses: actions/upload-artifact@v7
         with:
           name: Artifacts
           path: build/libs/
-      - name: publish versions to Modrinth
-        if: github.event_name == 'workflow_dispatch'
+      - name: Publish versions to Modrinth
+        if: inputs.publish == true
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
         run: ./gradlew chiseledPublishModrinth --no-configuration-cache

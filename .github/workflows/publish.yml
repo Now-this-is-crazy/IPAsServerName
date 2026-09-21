@@ -1,0 +1,12 @@
+name: Publish to Modrinth
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    uses: ./.github/workflows/build.yml
+    with:
+      publish: true
+    secrets:
+      MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
