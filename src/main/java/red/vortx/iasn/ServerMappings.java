@@ -1,4 +1,4 @@
-package io.github.redvortexdev.iasn;
+package red.vortx.iasn;
 
 import com.google.common.net.InternetDomainName;
 import com.google.gson.JsonElement;

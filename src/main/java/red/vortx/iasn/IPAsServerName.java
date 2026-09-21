@@ -1,4 +1,4 @@
-package io.github.redvortexdev.iasn;
+package red.vortx.iasn;
 
 import com.google.gson.JsonElement;
 import net.fabricmc.api.ModInitializer;

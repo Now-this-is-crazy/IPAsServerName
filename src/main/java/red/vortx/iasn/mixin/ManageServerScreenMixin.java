@@ -1,6 +1,6 @@
-package io.github.redvortexdev.iasn.mixin;
+package red.vortx.iasn.mixin;
 
-import io.github.redvortexdev.iasn.IPAsServerName;
+import red.vortx.iasn.IPAsServerName;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ManageServerScreen;
 import net.minecraft.client.multiplayer.ServerData;
