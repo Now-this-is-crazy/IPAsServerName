@@ -1,62 +1,94 @@
 plugins {
-	id("net.fabricmc.fabric-loom")
-	`maven-publish`
+    id("dev.kikugie.loom-back-compat")
+    `maven-publish`
 }
 
-repositories {
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
+version = "${property("mod.version")}+${sc.current.version}"
+base.archivesName = property("mod.id") as String
+
+val requiredJava: JavaVersion = when {
+    sc.current.parsed >= "26.1" -> JavaVersion.VERSION_25
+    sc.current.parsed >= "1.20.5" -> JavaVersion.VERSION_21
+    sc.current.parsed >= "1.18" -> JavaVersion.VERSION_17
+    sc.current.parsed >= "1.17" -> JavaVersion.VERSION_16
+    else -> JavaVersion.VERSION_1_8
 }
 
 dependencies {
-	minecraft("com.mojang:minecraft:${providers.gradleProperty("minecraft_version").get()}")
-	implementation("net.fabricmc:fabric-loader:${providers.gradleProperty("loader_version").get()}")
-
-	// Fabric API.
-	//implementation("net.fabricmc.fabric-api:fabric-api:${providers.gradleProperty("fabric_api_version").get()}")
+    minecraft("com.mojang:minecraft:${sc.current.version}")
+    loomx.applyMojangMappings()
+    modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
 }
 
-tasks.processResources {
-	val version = version
-	inputs.property("version", version)
+loom {
+    fabricModJsonPath = rootProject.file("src/main/resources/fabric.mod.json")
 
-	filesMatching("fabric.mod.json") {
-		expand("version" to version)
-	}
-}
-
-tasks.withType<JavaCompile>().configureEach {
-	options.release = 25
+    runConfigs.all {
+        preferGradleTask = true
+        generateRunConfig = true
+        runDirectory = rootProject.file("run")
+    }
 }
 
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
+    withSourcesJar()
+    sourceCompatibility = requiredJava
+    targetCompatibility = requiredJava
 
-	sourceCompatibility = JavaVersion.VERSION_25
-	targetCompatibility = JavaVersion.VERSION_25
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(requiredJava.majorVersion)
+    }
 }
 
-tasks.jar {
-	val projectName = project.name
-	inputs.property("projectName", projectName)
+tasks {
+    processResources {
+        val resourceProperties = mapOf(
+            "version" to sc.properties["mod.version"],
+            "minecraft" to sc.properties["mod.mc_compat"],
+            "java" to requiredJava.majorVersion
+        )
 
-	from("LICENSE") {
-		rename { "${it}_$projectName" }
-	}
+        inputs.properties(resourceProperties)
+
+        filesMatching("fabric.mod.json") {
+            expand(resourceProperties)
+        }
+
+        val mixinCompatibility = "JAVA_${requiredJava.majorVersion}"
+        filesMatching("*.mixins.json") {
+            expand("java" to mixinCompatibility)
+        }
+    }
+
+    withType<JavaCompile>().configureEach {
+        if (requiredJava >= JavaVersion.VERSION_1_9) {
+            options.release = requiredJava.majorVersion.toInt()
+        }
+    }
+
+    withType<Jar> {
+        val modId = project.property("mod.id")
+        inputs.property("modId", modId)
+
+        from(rootProject.file("LICENSE")) {
+            rename { "$it-$modId" }
+        }
+    }
+
+    register<Copy>("buildAndCollect") {
+        group = "build"
+        description = "Builds mod version jars."
+
+        inputs.property("version", project.property("mod.version"))
+        from(loomx.modJar.flatMap { it.archiveFile }, loomx.modSourcesJar.flatMap { it.archiveFile })
+        into(rootProject.layout.buildDirectory.dir("libs/${project.property("mod.version")}"))
+    }
 }
 
-// Configure the maven publication.
 publishing {
-	publications {
-		register<MavenPublication>("mavenJava") {
-			from(components["java"])
-		}
-	}
-
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-	}
+    publications {
+        register<MavenPublication>("mavenJava") {
+            from(components["java"])
+        }
+    }
 }

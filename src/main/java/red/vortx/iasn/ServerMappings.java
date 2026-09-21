@@ -13,8 +13,7 @@ public class ServerMappings {
     private final Map<String, String> serverMap = new HashMap<>();
 
     public static Optional<String> clean(final String serverAddress) {
-
-        if (serverAddress == null || serverAddress.isBlank()) {
+        if (serverAddress == null || serverAddress.trim().isEmpty()) {
             return Optional.empty();
         }
 
@@ -40,7 +39,8 @@ public class ServerMappings {
             final String address = server.get("primaryAddress").getAsString();
 
             Optional<String> cleanAddress = clean(address);
-            if (cleanAddress.isEmpty()) {
+            //noinspection SimplifyOptionalCallChains -- missing on JDK 8
+            if (!cleanAddress.isPresent()) {
                 return;
             }
 

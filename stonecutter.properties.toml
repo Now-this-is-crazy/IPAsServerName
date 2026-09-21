@@ -1,0 +1,21 @@
+mod.id = "iasn"
+mod.group = "red.vortx.iasn"
+mod.version = "1.2.0"
+
+deps.fabric_loader = "0.19.5"
+loomx.loom_version = "1.18-SNAPSHOT"
+
+["1.16.5"]
+mod.mc_compat = "1.16.5"
+
+["1.18.2"]
+mod.mc_compat = "1.18.2"
+
+["1.19.3"]
+mod.mc_compat = ">=1.19 <=1.19.3"
+
+["1.20.4"]
+mod.mc_compat = ">=1.19.4 <=1.21.11"
+
+["26.3"]
+mod.mc_compat = ">=26.1 <=26.3"
