@@ -1,5 +1,6 @@
 plugins {
     id("dev.kikugie.loom-back-compat")
+    id("com.modrinth.minotaur") version "2.9.0"
     `maven-publish`
 }
 
@@ -12,6 +13,18 @@ val requiredJava: JavaVersion = when {
     sc.current.parsed >= "1.18" -> JavaVersion.VERSION_17
     sc.current.parsed >= "1.17" -> JavaVersion.VERSION_16
     else -> JavaVersion.VERSION_1_8
+}
+
+val modrinthGameVersions = when (sc.current.version) {
+    "1.16.5" -> listOf("1.16.5")
+    "1.18.2" -> listOf("1.18.2")
+    "1.19.3" -> listOf("1.19", "1.19.1", "1.19.2", "1.19.3")
+    "1.20.4" -> listOf(
+        "1.19.4", "1.20", "1.20.1", "1.20.2", "1.20.3", "1.20.4", "1.20.5", "1.20.6", "1.21", "1.21.1",
+        "1.21.2", "1.21.3", "1.21.4", "1.21.5", "1.21.6", "1.21.7", "1.21.8", "1.21.9", "1.21.10", "1.21.11"
+    )
+    "26.3" -> listOf("26.1", "26.1.2", "26.2", "26.3")
+    else -> error("Unsupported target: ${sc.current.version}")
 }
 
 dependencies {
@@ -91,4 +104,13 @@ publishing {
             from(components["java"])
         }
     }
+}
+
+modrinth {
+    token.set(providers.environmentVariable("MODRINTH_TOKEN"))
+    projectId.set("ip-as-server-name")
+    uploadFile.set(loomx.modJar.flatMap { it.archiveFile })
+    versionType.set("release")
+    gameVersions.addAll(modrinthGameVersions)
+    loaders.add("fabric")
 }
